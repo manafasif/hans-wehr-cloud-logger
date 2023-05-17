@@ -52,23 +52,11 @@ jobs:
             # comment
             # Now we have got the access of EC2 and we will start the deploy
             cd ~/hans-wehr-cloud-logger &&
-            git checkout master &&
+            git checkout main &&
             git fetch --all &&
-            git reset --hard origin/master &&
-            git pull origin master &&
+            git reset --hard origin/main &&
+            git pull origin main &&
             echo "DB_USERNAME=${{ secrets.API_DB_USERNAME  }}" > .env && 
             echo "DB_PASSWORD=${{ secrets.API_DB_PASSWORD  }}" >> .env &&
             docker-compose build && docker-compose up -d
             '
-  # deploy:
-  #   runs-on: ubuntu-latest
-
-  #   steps:
-  #     - uses: alex-ac/github-action-ssh-docker-compose@master
-  #       name: Docker-Stack Remote Deployment
-  #       with:
-  #         ssh_host: ec2-54-226-180-50.compute-1.amazonaws.com
-  #         ssh_private_key: ${{ secrets.API_SSH_PRIVATE_KEY }}
-  #         ssh_user: ubuntu
-  #         docker_compose_prefix: hans-wehr
-  #         use_stack: "true"

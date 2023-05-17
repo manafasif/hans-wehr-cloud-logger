@@ -51,17 +51,11 @@ jobs:
           ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
             # comment
             # Now we have got the access of EC2 and we will start the deploy
-            if [ -d "~/hans-wehr-cloud-logger" ]; then
-                cd ~/hans-wehr-cloud-logger &&
-                git checkout master &&
-                git fetch --all &&
-                git reset --hard origin/master &&
-                git pull origin master
-            else
-                cd ~ &&
-                git clone https://github.com/manafasif/hans-wehr-cloud-logger.git &&
-                cd ~/hans-wehr-cloud-logger
-            fi &&
+            cd ~/hans-wehr-cloud-logger &&
+            git checkout master &&
+            git fetch --all &&
+            git reset --hard origin/master &&
+            git pull origin master &&
             echo "DB_USERNAME=${{ secrets.API_DB_USERNAME  }}" > .env && 
             echo "DB_PASSWORD=${{ secrets.API_DB_PASSWORD  }}" >> .env &&
             docker-compose build && docker-compose up -d

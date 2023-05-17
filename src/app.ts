@@ -2,19 +2,13 @@ import express from "express";
 import https from "https";
 import fs from "fs";
 import http from "http";
-import NOTFOUND from "dns";
-import swaggerUi from "swagger-ui-express";
 import { logger } from "./utils/logger";
 import { initDB } from "./utils/db";
-import { rootHandler } from "./routes/root";
-import { nounHandler } from "./routes/noun";
-import { feedbackHandler } from "./routes/feedback";
-import { specs } from "./utils/swagger-api";
-import { authHandler } from "./routes/auth";
+import { logHandler } from "./routes/log";
 
 const app = express();
 
-const PORT = process.env.PORT || 8080,
+const PORT = process.env.PORT || 8081,
   LOCAL = process.env.LOCAL || 0,
   HTTP = process.env.HTTP || 0;
 
@@ -30,7 +24,6 @@ app.use(
   })
 );
 
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 
 app.use((_req, _res, next) => {
   console.log("Time:", Date.now());
@@ -39,17 +32,12 @@ app.use((_req, _res, next) => {
 
 app.get("/", (_req, res) => {
   logger.info("Received GET Request to / endpoint");
-  res.send("مرحبا");
+  res.send("Hans Wehr Logging API is up and running");
 });
 
 
 app.use(bodyParser.json());
-app.use("/root", rootHandler);
-app.use("/noun", nounHandler);
-app.use("/feedback", feedbackHandler);
-app.use("/auth", authHandler)
-
-logger.info("routes added");
+app.use('/log', logHandler)
 
 initDB()
   .then((_database) => {
@@ -104,10 +92,6 @@ function initializeHTTPS() {
 
   try {
     const httpsServer = https.createServer(
-      // {
-      //   key: HTTPS_KEY,
-      //   cert: HTTPS_CERT
-      // },
       {
         key: fs.readFileSync(
           "./privkey.pem"
@@ -127,8 +111,4 @@ function initializeHTTPS() {
   } catch (err) {
     console.error(err);
   }
-
-
-
-
 }

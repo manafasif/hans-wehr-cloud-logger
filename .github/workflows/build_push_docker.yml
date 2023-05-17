@@ -42,8 +42,8 @@ jobs:
       - uses: actions/checkout@v2
       - name: Deploy in EC2
         env:
-          PRIVATE_KEY: ${{ secrets.API_SSH_PRIVATE_KEY  }}
-          HOSTNAME: ec2-54-226-180-50.compute-1.amazonaws.com
+          PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY  }}
+          HOSTNAME: ec2-44-202-107-5.compute-1.amazonaws.com
           USER_NAME: ubuntu
 
         run: |
@@ -51,16 +51,19 @@ jobs:
           ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
             # comment
             # Now we have got the access of EC2 and we will start the deploy
-            cd ~/hans-wehr-backend &&
-            git checkout master &&
-            git fetch --all &&
-            git reset --hard origin/master &&
-            git pull origin master &&
+            if [ -d "~/hans-wehr-cloud-logger" ]; then
+                cd ~/hans-wehr-cloud-logger &&
+                git checkout master &&
+                git fetch --all &&
+                git reset --hard origin/master &&
+                git pull origin master
+            else
+                cd ~ &&
+                git clone https://github.com/manafasif/hans-wehr-cloud-logger.git &&
+                cd ~/hans-wehr-cloud-logger
+            fi &&
             echo "DB_USERNAME=${{ secrets.API_DB_USERNAME  }}" > .env && 
             echo "DB_PASSWORD=${{ secrets.API_DB_PASSWORD  }}" >> .env &&
-            echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY  }}" >> .env &&
-            echo "${{ secrets.API_HTTPS_KEY  }}" > privkey.pem &&
-            echo "${{ secrets.API_HTTPS_CERT  }}" > fullchain.pem &&
             docker-compose build && docker-compose up -d
             '
   # deploy:

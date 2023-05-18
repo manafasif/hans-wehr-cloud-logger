@@ -12,6 +12,7 @@ const VALID_LEVELS = ["info", "debug", "error"]
 export interface Log {
     origin: string;
     level: string;
+    subject: string | undefined;
     message: string | undefined;
 }
 

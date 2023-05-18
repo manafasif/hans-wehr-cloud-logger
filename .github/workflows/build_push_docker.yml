@@ -28,5 +28,7 @@ jobs:
             git pull origin main &&
             echo "DB_USERNAME=${{ secrets.API_DB_USERNAME  }}" > .env && 
             echo "DB_PASSWORD=${{ secrets.API_DB_PASSWORD  }}" >> .env &&
+            echo "${{ secrets.HTTPS_KEY  }}" > privkey.pem &&
+            echo "${{ secrets.HTTPS_CERT  }}" > fullchain.pem &&
             docker-compose build && docker-compose up -d
             '

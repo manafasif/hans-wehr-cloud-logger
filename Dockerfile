@@ -15,5 +15,5 @@ COPY . .
 
 EXPOSE 80 443
 
-CMD [ "yarn", "run", "deployHTTP" ]
+CMD [ "yarn", "run", "deployHTTPS" ]
 

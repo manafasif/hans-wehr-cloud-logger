@@ -28,6 +28,7 @@ function isValidLog(log: any): log is Log {
 }
 
 
+
 router.post("/", (req: Request, res: Response) => {
     const log: Log = req.body
 

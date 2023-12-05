@@ -21,6 +21,8 @@ jobs:
           ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
             # comment
             # Now we have got the access of EC2 and we will start the deploy
+            docker system prune -a &&
+            sudo journalctl --vacuum-time=3d &&
             cd ~/hans-wehr-cloud-logger &&
             git checkout main &&
             git fetch --all &&
@@ -28,6 +30,8 @@ jobs:
             git pull origin main &&
             echo "DB_USERNAME=${{ secrets.API_DB_USERNAME  }}" > .env && 
             echo "DB_PASSWORD=${{ secrets.API_DB_PASSWORD  }}" >> .env &&
+            echo "EMAIL_USERNAME=${{ secrets.EMAIL_USERNAME  }}" >> .env && 
+            echo "EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD  }}" >> .env &&
             echo "${{ secrets.HTTPS_KEY  }}" > privkey.pem &&
             echo "${{ secrets.HTTPS_CERT  }}" > fullchain.pem &&
             docker-compose build && docker-compose up -d

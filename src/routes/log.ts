@@ -3,6 +3,7 @@ import { logger } from "../utils/logger";
 import { insertLogIntoDB } from "../utils/db";
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
+import { triggerWorkflow } from "../utils/trigger_workflows";
 
 
 const router = express.Router();
@@ -87,7 +88,9 @@ export async function checkUptime() {
     try {
         const response = await fetch('https://api.hanswehr.com/root?root=qtl');
         if (response.status === 200) {
-            logger.info('Uptime check passed. Endpoint is up.');
+            // logger.info('Uptime check passed. Endpoint is up.');
+            console.log('Uptime check passed. Endpoint is up.');
+
             email_sent = false
         } else {
             logger.error('Uptime check failed. Endpoint is down.');
@@ -95,16 +98,20 @@ export async function checkUptime() {
 
             if (!email_sent) {
                 await transporter.sendMail(mailOptions);
+                await triggerWorkflow()
                 email_sent = true
             }
+
         }
     } catch (error: any) {
         logger.error(`Error checking uptime: ${error.message}`);
         if (!email_sent) {
             await transporter.sendMail(mailOptions);
             email_sent = true
+            await triggerWorkflow()
         }
         // Trigger another workflow or take necessary actions on failure
+
     }
 }
 

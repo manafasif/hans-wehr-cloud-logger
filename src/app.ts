@@ -5,6 +5,8 @@ import http from "http";
 import { logger } from "./utils/logger";
 import { initDB } from "./utils/db";
 import { logHandler } from "./routes/log";
+import { checkUptime } from "./routes/log";
+
 
 const app = express();
 
@@ -38,6 +40,12 @@ app.get("/", (_req, res) => {
 
 app.use(bodyParser.json());
 app.use('/log', logHandler)
+
+
+const UPTIME_CHECK_INTERVAL = process.env.UPTIME_CHECK_INTERVAL as unknown as number || 60000; // Default: 1 minute
+
+setInterval(checkUptime, UPTIME_CHECK_INTERVAL);
+
 
 initDB()
   .then((_database) => {

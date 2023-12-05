@@ -47,7 +47,6 @@ router.post("/", (req: Request, res: Response) => {
 
 
 
-const UPTIME_CHECK_INTERVAL = process.env.UPTIME_CHECK_INTERVAL || 60000; // Default: 1 minute
 
 
 const EMAIL_USERNAME = process.env.EMAIL_USERNAME;
@@ -72,29 +71,39 @@ const transporter = nodemailer.createTransport({
 
 const EMAIL_LIST = ["manaf.asif12@gmail.com"];
 
+var email_sent = false
 
-async function checkUptime() {
+export async function checkUptime() {
+
+    const subject = "API DOWN";
+
+    const mailOptions = {
+        from: EMAIL_USERNAME, // Replace with your Gmail email
+        to: EMAIL_LIST.join(", "),
+        subject,
+        text: subject,
+    };
+
     try {
         const response = await fetch('https://api.hanswehr.com/root?root=qtl');
         if (response.status === 200) {
             logger.info('Uptime check passed. Endpoint is up.');
+            email_sent = false
         } else {
             logger.error('Uptime check failed. Endpoint is down.');
             // Trigger another workflow or take necessary actions on failure
 
-            const subject = "API DOWN";
-
-            const mailOptions = {
-                from: EMAIL_USERNAME, // Replace with your Gmail email
-                to: EMAIL_LIST.join(", "),
-                subject,
-                text: subject,
-            };
-
-            await transporter.sendMail(mailOptions);
+            if (!email_sent) {
+                await transporter.sendMail(mailOptions);
+                email_sent = true
+            }
         }
-    } catch (error) {
+    } catch (error: any) {
         logger.error(`Error checking uptime: ${error.message}`);
+        if (!email_sent) {
+            await transporter.sendMail(mailOptions);
+            email_sent = true
+        }
         // Trigger another workflow or take necessary actions on failure
     }
 }

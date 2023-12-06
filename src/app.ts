@@ -7,7 +7,6 @@ import { initDB } from "./utils/db";
 import { logHandler } from "./routes/log";
 import { checkUptime } from "./routes/log";
 
-
 const app = express();
 
 const PORT = process.env.PORT || 8081,
@@ -120,3 +119,5 @@ function initializeHTTPS() {
     console.error(err);
   }
 }
+
+

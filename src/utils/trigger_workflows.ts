@@ -1,4 +1,6 @@
-import * as fetch from "node-fetch";
+// import * as fetch from "node-fetch";
+import { RequestInfo, RequestInit } from "node-fetch";
+const fetch = (url: RequestInfo, init?: RequestInit) => import("node-fetch").then(({ default: fetch }) => fetch(url, init));
 import { logger } from './logger';
 
 // Function to trigger GitHub Actions workflow

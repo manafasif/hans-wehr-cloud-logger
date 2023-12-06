@@ -1,4 +1,4 @@
-import fetch from 'node-fetch';
+import * as fetch from "node-fetch";
 import { logger } from './logger';
 
 // Function to trigger GitHub Actions workflow

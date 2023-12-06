@@ -88,8 +88,8 @@ export async function checkUptime() {
     try {
         const response = await fetch('https://api.hanswehr.com/root?root=qtl');
         if (response.status === 200) {
-            // logger.info('Uptime check passed. Endpoint is up.');
-            console.log('Uptime check passed. Endpoint is up.');
+            logger.info('Uptime check passed. Endpoint is up.');
+            // console.log('Uptime check passed. Endpoint is up.');
 
             email_sent = false
         } else {
